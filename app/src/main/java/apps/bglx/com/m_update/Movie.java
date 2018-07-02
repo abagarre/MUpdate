@@ -1,16 +1,18 @@
 package apps.bglx.com.m_update;
 
 public class Movie {
-    private String title, genre, year;
+    private String title, genre, year, cover;
 
     public Movie() {
     }
 
-    public Movie(String title, String genre, String year) {
+    public Movie(String title, String genre, String year, String cover) {
         this.title = title;
         this.genre = genre;
         this.year = year;
+        this.cover = cover;
     }
+
 
     public String getTitle() {
         return title;
@@ -35,4 +37,13 @@ public class Movie {
     public void setGenre(String genre) {
         this.genre = genre;
     }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
 }

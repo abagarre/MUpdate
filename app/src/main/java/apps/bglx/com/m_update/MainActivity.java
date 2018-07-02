@@ -1,6 +1,6 @@
 package apps.bglx.com.m_update;
 
-import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,17 +8,15 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+
+
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
     private List<Movie> movieList = new ArrayList<>();
@@ -66,8 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
         databaseManager.close();
 
-
         mAdapter.notifyDataSetChanged();
+
     }
 
     private class LongOperation extends AsyncTask<String, Void, String> {
@@ -99,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             System.out.println(albumName);
             System.out.println(albumDate);
 
-            Movie movie = new Movie(albumName, artistName, albumDate);
+            Movie movie = new Movie(albumName, artistName, albumDate, albumPicture);
             movieList.add(movie);
 
             mAdapter.notifyDataSetChanged();
