@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GetInfo {
 
@@ -39,19 +41,61 @@ public class GetInfo {
         }
     }
 
-    public String artistID(String artistName) {
-        String queryInfo, artistId;
+    public List<List<String>> artistSearch(String artistName) {
+        String queryInfo,
+                artistInfo1, artistInfo2, artistInfo3,
+                artistName1, artistName2, artistName3,
+                artistId1, artistId2,artistId3,
+                artistImage1, artistImage2, artistImage3;
+        List<String> artistIds = new ArrayList<>();
+        List<String> artistNames = new ArrayList<>();
+        List<String> artistImages = new ArrayList<>();
+        List<List<String>> artistSearchInfos = new ArrayList<>();
         String url = "https://www.deezer.com/search/" + artistName + "/artist";
         try {
             String code =  getURLSource(url);
             queryInfo = code.substring(code.indexOf("\"QUERY\":"));
-            artistId = queryInfo.substring(queryInfo.indexOf("\"ART_ID\":") + 10);
-            artistId = artistId.substring(0, artistId.indexOf('"'));
+            artistInfo1 = queryInfo.substring(queryInfo.indexOf("\"ART_ID\":") + 10);
+            artistInfo2 = artistInfo1.substring(artistInfo1.indexOf("\"ART_ID\":") + 10);
+            artistInfo3 = artistInfo2.substring(artistInfo2.indexOf("\"ART_ID\":") + 10);
+
+            artistId1 = artistInfo1.substring(0,artistInfo1.indexOf('"'));
+            artistName1 = artistInfo1.substring(artistInfo1.indexOf("\"ART_NAME\":") + 12);
+            artistName1 = artistName1.substring(0, artistName1.indexOf('"'));
+            artistImage1 = artistInfo1.substring(artistInfo1.indexOf("\"ART_PICTURE\":") + 15);
+            artistImage1 = artistImage1.substring(0, artistImage1.indexOf('"'));
+
+            artistId2 = artistInfo2.substring(0,artistInfo2.indexOf('"'));
+            artistName2 = artistInfo2.substring(artistInfo2.indexOf("\"ART_NAME\":") + 12);
+            artistName2 = artistName2.substring(0, artistName2.indexOf('"'));
+            artistImage2 = artistInfo2.substring(artistInfo2.indexOf("\"ART_PICTURE\":") + 15);
+            artistImage2 = artistImage2.substring(0, artistImage2.indexOf('"'));
+
+            artistId3 = artistInfo3.substring(0,artistInfo3.indexOf('"'));
+            artistName3 = artistInfo3.substring(artistInfo3.indexOf("\"ART_NAME\":") + 12);
+            artistName3 = artistName3.substring(0, artistName3.indexOf('"'));
+            artistImage3 = artistInfo3.substring(artistInfo3.indexOf("\"ART_PICTURE\":") + 15);
+            artistImage3 = artistImage3.substring(0, artistImage3.indexOf('"'));
+
+            artistIds.add(artistId1);
+            artistIds.add(artistId2);
+            artistIds.add(artistId3);
+            artistNames.add(artistName1.replace("\\u00e9","é"));
+            artistNames.add(artistName2.replace("\\u00e9","é"));
+            artistNames.add(artistName3.replace("\\u00e9","é"));
+            artistImages.add(artistImage1);
+            artistImages.add(artistImage2);
+            artistImages.add(artistImage3);
+            artistSearchInfos.add(artistIds);
+            artistSearchInfos.add(artistNames);
+            artistSearchInfos.add(artistImages);
+
         } catch (Exception e) {
-            artistId = "";
+
         }
-        return artistId;
+        return artistSearchInfos;
     }
+
 
     public String albumName(String url) {
         String albumInfo, albumName;
