@@ -80,18 +80,17 @@ public class GetInfo {
             artistIds.add(artistId1);
             artistIds.add(artistId2);
             artistIds.add(artistId3);
-            artistNames.add(artistName1.replace("\\u00e9","é"));
-            artistNames.add(artistName2.replace("\\u00e9","é"));
-            artistNames.add(artistName3.replace("\\u00e9","é"));
+            artistNames.add(formatUnicode(artistName1));
+            artistNames.add(formatUnicode(artistName2));
+            artistNames.add(formatUnicode(artistName3));
             artistImages.add(artistImage1);
             artistImages.add(artistImage2);
             artistImages.add(artistImage3);
             artistSearchInfos.add(artistIds);
             artistSearchInfos.add(artistNames);
             artistSearchInfos.add(artistImages);
-
         } catch (Exception e) {
-
+            System.out.println("Search Error");
         }
         return artistSearchInfos;
     }
@@ -109,7 +108,7 @@ public class GetInfo {
             System.out.println("Album Name Error");
             System.out.println(e.toString());
         }
-        return albumName;
+        return formatUnicode(albumName);
     }
 
     public String albumDate(String url) {
@@ -141,5 +140,21 @@ public class GetInfo {
         return albumPicture;
     }
 
+    public static String formatUnicode(String escaped) {
+        if(!escaped.contains("\\u"))
+            return escaped;
+        String processed="";
+        int position = escaped.indexOf("\\u");
+        while(position!=-1) {
+            if(position!=0)
+                processed += escaped.substring(0,position);
+            String token=escaped.substring(position + 2,position + 6);
+            escaped=escaped.substring(position+6);
+            processed += (char)Integer.parseInt(token,16);
+            position=escaped.indexOf("\\u");
+        }
+        processed += escaped;
+        return processed;
+    }
 
 }

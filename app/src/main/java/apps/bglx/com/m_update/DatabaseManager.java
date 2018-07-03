@@ -54,7 +54,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         List<ArtistsData> ids = new ArrayList<>();
 
         // 1ère technique : SQL
-        String strSql = "select * from T_ArtistID limit 10";
+        String strSql = "select * from T_ArtistID";
         Cursor cursor = this.getReadableDatabase().rawQuery( strSql, null );
 
         // 2nd technique "plus objet"

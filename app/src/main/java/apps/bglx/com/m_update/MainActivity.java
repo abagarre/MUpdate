@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private MoviesAdapter mAdapter;
 
     private DatabaseManager databaseManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +64,11 @@ public class MainActivity extends AppCompatActivity {
         databaseManager = new DatabaseManager(this);
 
         List<ArtistsData> ids = databaseManager.readTop10();
+        int len = 100/ids.size();
 
         for ( ArtistsData artistsData : ids ) {
 
             String infos = artistsData.toString();
-
-            System.out.println(infos);
-
             new LongOperation().execute(infos);
 
         }
@@ -84,18 +84,22 @@ public class MainActivity extends AppCompatActivity {
         GetInfo getAlbum = new GetInfo();
         String artistURL;
         String artistName, albumName, albumDate, albumPicture;
+        ProgressBar loadingBar = (ProgressBar) findViewById(R.id.loading_bar);
+        int len = 100/databaseManager.readTop10().size();
 
         @Override
         protected String doInBackground(String... info) {
-
             try {
                 String infos = info[0];
                 artistURL = "https://www.deezer.com/fr/artist/" + infos.substring(infos.indexOf(",") + 1);
-                System.out.println(artistURL);
                 artistName = infos.substring(0,infos.indexOf(","));
-                albumName = getAlbum.albumName(artistURL).replace("\\u00e9","é");
+                albumName = getAlbum.albumName(artistURL);
                 albumDate = getAlbum.albumDate(artistURL);
                 albumPicture = getAlbum.albumPicture(artistURL);
+                if (albumName.length() > 25) {
+                    albumName = albumName.substring(0,25);
+                    albumName += "...";
+                }
             } catch (Exception e) {
                 System.out.println("Error");
             }
@@ -104,15 +108,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-
-            System.out.println(albumName);
-            System.out.println(albumDate);
-
             Movie movie = new Movie(albumName, artistName, albumDate, albumPicture);
             movieList.add(movie);
-
             mAdapter.notifyDataSetChanged();
 
+            loadingBar.incrementProgressBy(len);
         }
 
     }
