@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 artistURL = "https://www.deezer.com/fr/artist/" + infos.substring(infos.indexOf(",") + 1);
                 System.out.println(artistURL);
                 artistName = infos.substring(0,infos.indexOf(","));
-                albumName = getAlbum.albumName(artistURL);
+                albumName = getAlbum.albumName(artistURL).replace("\\u00e9","é");
                 albumDate = getAlbum.albumDate(artistURL);
                 albumPicture = getAlbum.albumPicture(artistURL);
             } catch (Exception e) {

@@ -56,7 +56,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         holder.year.setText(movie.getYear());
         Picasso.get().load(movie.getCover()).into(holder.cover);
 
-        Picasso.get().load(movie.getCover()).resize(1080,220).centerCrop().into(
+        Picasso.get().load(movie.getCover()).resize(1080,200).centerCrop().into(
                 new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {

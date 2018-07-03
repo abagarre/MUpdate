@@ -2,13 +2,22 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="70dp"
+    android:background="@color/colorPrimary">
 
     <ImageView
         android:id="@+id/background_cover"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:scaleType="fitXY" />
+
+    <ImageView
+        android:id="@+id/black_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:alpha="0.5"
+        android:src="@drawable/black_background"/>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -24,36 +33,35 @@
 
         <ImageView
             android:id="@+id/cover"
-            android:layout_width="55dp"
-            android:layout_height="55dp" />
+            android:layout_width="60dp"
+            android:layout_height="60dp"/>
 
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="60dp"
-            android:textColor="@color/title"
-            android:textSize="16dp"
-            android:textStyle="bold"
-            android:text="Chargement.."/>
+            android:layout_marginStart="65dp"
+            android:textColor="@color/white_text"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/genre"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="60dp"
-            android:layout_below="@id/title" />
+            android:layout_marginStart="65dp"
+            android:layout_below="@id/title"
+            android:textColor="@color/white_text"/>
 
         <TextView
             android:id="@+id/year"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="35dp"
             android:textSize="10sp"
-            android:textColor="@color/year"
-            android:text="Chargement..."/>
+            android:textColor="@color/year"/>
 
     </RelativeLayout>
 
