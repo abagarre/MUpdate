@@ -1,5 +1,8 @@
 package apps.bglx.com.m_update;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
@@ -9,10 +12,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 public class AddArtist extends AppCompatActivity implements View.OnClickListener {
+
+    public static Activity addAct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +40,9 @@ public class AddArtist extends AppCompatActivity implements View.OnClickListener
                 new LongOperation().execute("");
                 break;
             case R.id.add_button:
+                Button add = (Button) findViewById(R.id.add_button);
+                add.setEnabled(false);
+                add.setText("En Cours");
                 EditText artistFinalName = (EditText) findViewById(R.id.final_artist_name);
                 EditText artistDeezerID = (EditText) findViewById(R.id.final_artist_idDeezer);
                 DatabaseManager databaseManager = new DatabaseManager(this);
@@ -43,6 +52,15 @@ public class AddArtist extends AppCompatActivity implements View.OnClickListener
                         0,
                         0);
                 databaseManager.close();
+                Context context = getApplicationContext();
+                CharSequence text = artistFinalName.getText().toString()+" ajouté !";
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+                MainActivity.mainAct.finish();
+                Intent i = new Intent(AddArtist.this,MainActivity.class);
+                startActivity(i);
+                finish();
                 break;
         }
     }

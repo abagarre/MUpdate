@@ -43,9 +43,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     public void insertScore( String name, int idDeezer, int idSpotify, int idYoutube ) {
-        name = name.replace( "'", "''" );
-        String strSql = "insert into T_ArtistID (name, idDeezer, idSpotify, idYoutube) values ('"
-                + name + "', " + idDeezer + ", " + idSpotify + ", " + idYoutube + ")";
+        name = name.replace( "'", "''" ).replace( "\"", "''" );
+        String strSql = "insert into T_ArtistID (name, idDeezer, idSpotify, idYoutube) " +
+                "values ('" + name + "', " + idDeezer + ", " + idSpotify + ", " + idYoutube + ")";
         this.getWritableDatabase().execSQL( strSql );
         Log.i( "DATABASE", "insertScore invoked" );
     }
@@ -71,6 +71,11 @@ public class DatabaseManager extends SQLiteOpenHelper {
         cursor.close();
 
         return ids;
+    }
+
+    public void deleteArtist(String stringID) {
+        String strSql = "DELETE FROM T_ArtistID WHERE idDeezer = " + stringID;
+        this.getWritableDatabase().execSQL( strSql );
     }
 
 }

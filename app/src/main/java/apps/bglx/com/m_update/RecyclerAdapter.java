@@ -1,8 +1,10 @@
 package apps.bglx.com.m_update;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BlurMaskFilter;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,75 +13,108 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.util.List;
 
-public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHolder> {
+class RecycleViewHolder extends RecyclerView.ViewHolder
+        implements View.OnClickListener, View.OnLongClickListener {
 
-    private List<Movie> moviesList;
+    public TextView title;
+    public TextView genre;
+    public TextView year;
+    public ImageView cover;
+    public ImageView backgroundCover;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, year, genre;
-        public ImageView cover, backgroundCover;
+    private ItemClickListener itemClickListener;
 
-        public MyViewHolder(View view) {
-            super(view);
-            title = (TextView) view.findViewById(R.id.title);
-            genre = (TextView) view.findViewById(R.id.genre);
-            year = (TextView) view.findViewById(R.id.year);
-            cover = (ImageView) view.findViewById(R.id.cover);
-            backgroundCover = view.findViewById(R.id.background_cover);
-        }
+
+    public RecycleViewHolder(@NonNull View itemView) {
+        super(itemView);
+        title = (TextView) itemView.findViewById(R.id.title);
+        genre = (TextView) itemView.findViewById(R.id.genre);
+        year = (TextView) itemView.findViewById(R.id.year);
+        cover = (ImageView) itemView.findViewById(R.id.cover);
+        backgroundCover = itemView.findViewById(R.id.background_cover);
+
+        itemView.setOnClickListener(this);
+        itemView.setOnLongClickListener(this);
     }
 
-    public MoviesAdapter(List<Movie> moviesList) {
-        this.moviesList = moviesList;
+    public void setItemClickListener(ItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        itemClickListener.OnClick(v, getAdapterPosition(),false);
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.movie_list_row, parent, false);
-        return new MyViewHolder(itemView);
+    public boolean onLongClick(View v) {
+        itemClickListener.OnClick(v,getAdapterPosition(),true);
+        return true;
+    }
+}
+
+public class RecyclerAdapter extends RecyclerView.Adapter<RecycleViewHolder> {
+
+    private List<Movie> albumList;
+
+    private Context context;
+
+
+    public RecyclerAdapter(List<Movie> albumList) {
+        this.albumList = albumList;
     }
 
 
+    @NonNull
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, int position) {
+    public RecycleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View itemView = inflater.inflate(R.layout.movie_list_row,parent,false);
 
-        final Movie movie = moviesList.get(position);
+        return new RecycleViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecycleViewHolder holder, int position) {
+        final Movie movie = albumList.get(position);
         holder.title.setText(movie.getTitle());
         holder.genre.setText(movie.getGenre());
         holder.year.setText(movie.getYear());
+        final ImageView backgroundBlurred = (ImageView) holder.backgroundCover;
+        final ImageView coverFront = (ImageView) holder.cover;
         Picasso.get().load(movie.getCover()).into(
                 new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        Bitmap blurredBack = fastblurBitmap(bitmap, 1, 30);
-                        holder.backgroundCover.setImageBitmap(blurredBack);
-                        holder.cover.setImageBitmap(bitmap);
+                        Bitmap blurredBack = fastblurBitmap(bitmap, 1, 20);
+                        backgroundBlurred.setImageBitmap(blurredBack);
+                        coverFront.setImageBitmap(bitmap);
                     }
                     @Override
                     public void onBitmapFailed(Exception e, Drawable errorDrawable) {
                     }
                     @Override
                     public void onPrepareLoad(Drawable placeHolderDrawable) {
-                        holder.backgroundCover.setImageDrawable(placeHolderDrawable);
                     }
                 }
         );
+
 
 
     }
 
     @Override
     public int getItemCount() {
-        return moviesList.size();
+        return albumList.size();
     }
-
 
     public Bitmap fastblurBitmap(Bitmap sentBitmap, float scale, int radius) {
 

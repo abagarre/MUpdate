@@ -1,8 +1,5 @@
 package apps.bglx.com.m_update;
 
-import java.util.Date;
-
-
 public class ArtistsData {
 
     private int idArtist;

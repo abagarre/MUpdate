@@ -18,7 +18,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddArtist"></activity>
+        <activity android:name=".AddArtist" />
+        <activity
+            android:name=".ArtistInfos"
+            android:label="@string/title_activity_artist_infos"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
