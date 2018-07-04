@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class GetInfo {
 
@@ -41,51 +42,46 @@ public class GetInfo {
         }
     }
 
+    public static String getURLToString(String url) throws Exception
+    {
+        if (android.os.Build.VERSION.SDK_INT > 9)
+        {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+        String code = new Scanner(new URL(url).openStream(), "UTF-8").useDelimiter("\\A").next();
+        System.out.println(code);
+        return code;
+    }
+
+
     public List<List<String>> artistSearch(String artistName) {
-        String queryInfo,
-                artistInfo1, artistInfo2, artistInfo3,
-                artistName1, artistName2, artistName3,
-                artistId1, artistId2,artistId3,
-                artistImage1, artistImage2, artistImage3;
+        String  artistName1, artistId1, artistImage1;
         List<String> artistIds = new ArrayList<>();
         List<String> artistNames = new ArrayList<>();
         List<String> artistImages = new ArrayList<>();
         List<List<String>> artistSearchInfos = new ArrayList<>();
-        String url = "https://www.deezer.com/search/" + artistName + "/artist";
+        String url = "https://api.deezer.com/search/artist/?q=" + artistName + "&index=0&limit=3&output=json";
         try {
-            String code =  getURLSource(url);
-            queryInfo = code.substring(code.indexOf("\"QUERY\":"));
-            artistInfo1 = queryInfo.substring(queryInfo.indexOf("\"ART_ID\":") + 10);
-            artistInfo2 = artistInfo1.substring(artistInfo1.indexOf("\"ART_ID\":") + 10);
-            artistInfo3 = artistInfo2.substring(artistInfo2.indexOf("\"ART_ID\":") + 10);
-
-            artistId1 = artistInfo1.substring(0,artistInfo1.indexOf('"'));
-            artistName1 = artistInfo1.substring(artistInfo1.indexOf("\"ART_NAME\":") + 12);
-            artistName1 = artistName1.substring(0, artistName1.indexOf('"'));
-            artistImage1 = artistInfo1.substring(artistInfo1.indexOf("\"ART_PICTURE\":") + 15);
-            artistImage1 = artistImage1.substring(0, artistImage1.indexOf('"'));
-
-            artistId2 = artistInfo2.substring(0,artistInfo2.indexOf('"'));
-            artistName2 = artistInfo2.substring(artistInfo2.indexOf("\"ART_NAME\":") + 12);
-            artistName2 = artistName2.substring(0, artistName2.indexOf('"'));
-            artistImage2 = artistInfo2.substring(artistInfo2.indexOf("\"ART_PICTURE\":") + 15);
-            artistImage2 = artistImage2.substring(0, artistImage2.indexOf('"'));
-
-            artistId3 = artistInfo3.substring(0,artistInfo3.indexOf('"'));
-            artistName3 = artistInfo3.substring(artistInfo3.indexOf("\"ART_NAME\":") + 12);
-            artistName3 = artistName3.substring(0, artistName3.indexOf('"'));
-            artistImage3 = artistInfo3.substring(artistInfo3.indexOf("\"ART_PICTURE\":") + 15);
-            artistImage3 = artistImage3.substring(0, artistImage3.indexOf('"'));
-
-            artistIds.add(artistId1);
-            artistIds.add(artistId2);
-            artistIds.add(artistId3);
-            artistNames.add(formatUnicode(artistName1));
-            artistNames.add(formatUnicode(artistName2));
-            artistNames.add(formatUnicode(artistName3));
-            artistImages.add(artistImage1);
-            artistImages.add(artistImage2);
-            artistImages.add(artistImage3);
+            String code = getURLToString(url);
+            String nb = code.substring(code.indexOf("total") + 7);
+            if (!nb.contains(",")) {
+                nb = nb.substring(0,nb.indexOf("}"));
+            } else {
+                nb = nb.substring(0,nb.indexOf(","));
+            }
+            int nbMax = Integer.parseInt(nb);
+            if (nbMax > 3) { nbMax = 3; }
+            for (int i = 0; i < nbMax; i++) {
+                artistId1 = code.substring(code.indexOf("id") + 4);
+                artistIds.add(artistId1.substring(0,artistId1.indexOf(",")));
+                artistName1 = formatUnicode(code.substring(code.indexOf("name") + 7));
+                artistNames.add(artistName1.substring(0,artistName1.indexOf("\"")));
+                artistImage1 = code.substring(code.indexOf("picture_medium") + 17);
+                artistImages.add(artistImage1.substring(0,artistImage1.indexOf("\""))
+                        .replaceAll("\\\\/","/"));
+                code = code.substring(code.indexOf("type") + 6);
+            }
             artistSearchInfos.add(artistIds);
             artistSearchInfos.add(artistNames);
             artistSearchInfos.add(artistImages);

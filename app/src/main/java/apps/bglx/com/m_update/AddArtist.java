@@ -16,6 +16,11 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
+import static java.lang.Math.min;
+import static java.lang.StrictMath.max;
+
 public class AddArtist extends AppCompatActivity implements View.OnClickListener {
 
     public static Activity addAct;
@@ -90,45 +95,59 @@ public class AddArtist extends AppCompatActivity implements View.OnClickListener
 
         @Override
         protected String doInBackground(String... params) {
+            int size;
             try {
                 EditText searchText = (EditText) findViewById(R.id.search_artist_text);
                 artistSearchedName = searchText.getText().toString();
-                artistId1 = get.artistSearch(artistSearchedName).get(0).get(0);
-                artistId2 = get.artistSearch(artistSearchedName).get(0).get(1);
-                artistId3 = get.artistSearch(artistSearchedName).get(0).get(2);
-                artistName1 = get.artistSearch(artistSearchedName).get(1).get(0);
-                artistName2 = get.artistSearch(artistSearchedName).get(1).get(1);
-                artistName3 = get.artistSearch(artistSearchedName).get(1).get(2);
-                artistImage1 = get.artistSearch(artistSearchedName).get(2).get(0);
-                artistImage2 = get.artistSearch(artistSearchedName).get(2).get(1);
-                artistImage3 = get.artistSearch(artistSearchedName).get(2).get(2);
+                List<List<String>> allSearch = get.artistSearch(artistSearchedName);
+                System.out.println(allSearch);
+                size = allSearch.get(0).size();
+                System.out.println(size);
+                if (size > 0) {
+                    artistId1 = allSearch.get(0).get(0);
+                    artistName1 = allSearch.get(1).get(0);
+                    artistImage1 = allSearch.get(2).get(0);
+                    System.out.println(artistId1);
+                }
+                if (size > 1) {
+                    artistId2 = allSearch.get(0).get(1);
+                    artistName2 = allSearch.get(1).get(1);
+                    artistImage2 = allSearch.get(2).get(1);
+                }
+                if (size > 2) {
+                    artistId3 = allSearch.get(0).get(2);
+                    artistName3 = allSearch.get(1).get(2);
+                    artistImage3 = allSearch.get(2).get(2);
+                }
+
             } catch (Exception e) {
                 System.out.println("Error");
+                size = 0;
             }
-            return "Executed";
+            return String.valueOf(size);
         }
 
         @Override
         protected void onPostExecute(String result) {
-            Picasso.get().load(
-                    "https://e-cdns-images.dzcdn.net/images/artist/"+artistImage1+"/264x264-000000-80-0-0.jpg"
-            ).into(artistImageView1);
-            Picasso.get().load(
-                    "https://e-cdns-images.dzcdn.net/images/artist/"+artistImage2+"/264x264-000000-80-0-0.jpg"
-            ).into(artistImageView2);
-            Picasso.get().load(
-                    "https://e-cdns-images.dzcdn.net/images/artist/"+artistImage3+"/264x264-000000-80-0-0.jpg"
-            ).into(artistImageView3);
-            artistTextName1.setText(artistName1);
-            artistButton1.setVisibility(View.VISIBLE);
-            artistTextName2.setText(artistName2);
-            artistButton2.setVisibility(View.VISIBLE);
-            artistTextName3.setText(artistName3);
-            artistButton3.setVisibility(View.VISIBLE);
-
-            artistButton1.setOnClickListener(this);
-            artistButton2.setOnClickListener(this);
-            artistButton3.setOnClickListener(this);
+            int size = Integer.parseInt(result);
+            if (size > 0) {
+                Picasso.get().load(artistImage1).into(artistImageView1);
+                artistTextName1.setText(artistName1.substring(0,min(artistName1.length(),15)));
+                artistButton1.setVisibility(View.VISIBLE);
+                artistButton1.setOnClickListener(this);
+            }
+            if (size > 1) {
+                Picasso.get().load(artistImage2).into(artistImageView2);
+                artistTextName2.setText(artistName2.substring(0,min(artistName2.length(),15)));
+                artistButton2.setVisibility(View.VISIBLE);
+                artistButton2.setOnClickListener(this);
+            }
+            if (size > 2) {
+                Picasso.get().load(artistImage3).into(artistImageView3);
+                artistTextName3.setText(artistName3.substring(0,min(artistName3.length(),15)));
+                artistButton3.setVisibility(View.VISIBLE);
+                artistButton3.setOnClickListener(this);
+            }
 
         }
 
