@@ -88,6 +88,7 @@ public class GetInfo {
             artistSearchInfos.add(artistNames);
             artistSearchInfos.add(artistImages);
         } catch (Exception e) {
+            System.out.println(e);
             System.out.println("Search Error");
         }
         return artistSearchInfos;
