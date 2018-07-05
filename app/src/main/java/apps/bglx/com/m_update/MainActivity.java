@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // To finish MainActivity in another activity :
         mainAct = this;
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -56,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-        // set the adapter
         recyclerView.setAdapter(mAdapter);
 
         databaseManager = new DatabaseManager(this);
@@ -87,9 +88,9 @@ public class MainActivity extends AppCompatActivity {
     private class LongOperation extends AsyncTask<String, Void, String> {
 
         GetInfo getAlbum = new GetInfo();
-        String artistURL;
-        String artistName, albumName, albumDate, albumPicture;
-        int ID;
+        String artistURL, artistName, albumName, albumDate, albumPicture;
+        String ID;
+        int id;
         ProgressBar loadingBar = (ProgressBar) findViewById(R.id.loading_bar);
         int len = 1000/databaseManager.readTop10().size();
 
@@ -97,15 +98,15 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... info) {
             try {
                 String infos = info[0];
-                ID = Integer.parseInt(infos.substring(infos.indexOf(",") + 1));
-                artistURL = "https://www.deezer.com/fr/artist/" + infos.substring(infos.indexOf(",") + 1);
+                ID = infos.substring(infos.indexOf(",") + 1);
+                id = Integer.parseInt(ID);
                 artistName = infos.substring(0,infos.indexOf(","));
-                albumName = getAlbum.albumName(artistURL);
-                albumDate = getAlbum.albumDate(artistURL);
-                albumPicture = getAlbum.albumPicture(artistURL);
+                List<String> lastAlbum = getAlbum.getLastAlbum(ID);
+                albumName = lastAlbum.get(0);
+                albumDate = lastAlbum.get(1);
+                albumPicture = lastAlbum.get(2);
                 if (albumName.length() > 28) {
-                    albumName = albumName.substring(0,26);
-                    albumName += "...";
+                    albumName = albumName.substring(0,26) + "...";
                 }
             } catch (Exception e) {
                 System.out.println("Error");
@@ -115,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            Movie movie = new Movie(albumName, artistName, albumDate, albumPicture,ID);
+            Movie movie = new Movie(albumName, artistName, albumDate, albumPicture,id);
             albumList.add(movie);
             mAdapter.notifyDataSetChanged();
             ObjectAnimator animation = ObjectAnimator.ofInt(loadingBar, "progress", len * incr);

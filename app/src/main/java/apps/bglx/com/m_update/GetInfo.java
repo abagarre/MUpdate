@@ -6,7 +6,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -36,7 +38,7 @@ public class GetInfo {
             return stringBuilder.toString();
 
         } catch (Exception e) {
-            System.out.println("Erreur");
+            System.out.println("toString Error");
             inputLine = "Error";
             return inputLine;
         }
@@ -91,50 +93,65 @@ public class GetInfo {
         return artistSearchInfos;
     }
 
-
-    public String albumName(String url) {
-        String albumInfo, albumName;
-        try {
-            String code =  getURLSource(url);
-            albumInfo = code.substring(code.indexOf("\"LAST_ALBUM\":"));
-            albumName = albumInfo.substring(albumInfo.indexOf("\"ALB_TITLE\":") + 13);
-            albumName = albumName.substring(0, albumName.indexOf('"'));
-        } catch (Exception e) {
-            albumName = "";
-            System.out.println("Album Name Error");
-            System.out.println(e.toString());
+    public List<String> getLastAlbum(String artistID) throws Exception {
+        List<String> lastInfos = new ArrayList<>();
+        String url = "https://api.deezer.com/artist/" + artistID + "/albums?limit=200";
+        if (android.os.Build.VERSION.SDK_INT > 9)
+        {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
         }
-        return formatUnicode(albumName);
+
+        String code = new Scanner(new URL(url).openStream(), "UTF-8").useDelimiter("\\A").next();
+
+        String strNb = code.substring(code.indexOf("\"total\"") + 8);
+        int nb = Integer.parseInt(strNb.substring(0,strNb.indexOf('}')));
+
+        String date = code.substring(code.indexOf("\"release_date\"")+16);
+        date = date.substring(0,date.indexOf("\""));
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date dateDate = format.parse(date);
+        String title = code.substring(code.indexOf("\"title\"")+9);
+        title = title.substring(0,title.indexOf("\""));
+        String picURL = code.substring(code.indexOf("\"cover_medium\"")+16);
+        picURL = picURL.substring(0,picURL.indexOf("\""));
+
+        code = code.substring(code.indexOf("\"type\"")+7);
+
+        for (int i = 1; i < nb; i++) {
+            String newDate = code.substring(code.indexOf("\"release_date\"")+16);
+            newDate = newDate.substring(0,newDate.indexOf("\""));
+            Date newDateDate = format.parse(newDate);
+            if (dateDate.compareTo(newDateDate) <= 0) {
+                dateDate = newDateDate;
+                title = code.substring(code.indexOf("\"title\"")+9);
+                title = title.substring(0,title.indexOf("\""));
+                picURL = code.substring(code.indexOf("\"cover_medium\"")+16);
+                picURL = picURL.substring(0,picURL.indexOf("\""));
+            }
+            code = code.substring(code.indexOf("\"type\"")+7);
+        }
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        date = formatter.format(dateDate);
+
+        if (!picURL.contains("http")) {
+            picURL = "https://e-cdns-images.dzcdn.net/images/cover/250x250.jpg";
+//            System.out.println("https://www.deezer.com/search/" + formatUnicode(title) + "/album");
+//            String coverCode = getURLSource("https://www.deezer.com/search/" + formatUnicode(title) + "/album");
+//            picURL = coverCode.substring(coverCode.indexOf("\"ALB_PICTURE\"") + 15);
+//            System.out.println(picURL);
+//            picURL = picURL.substring(0,picURL.indexOf(""));
+//            picURL = "https://e-cdns-images.dzcdn.net/images/cover/" + picURL + "/250x250.jpg";
+        }
+
+        lastInfos.add(formatUnicode(title));
+        lastInfos.add(date);
+        lastInfos.add(picURL.replaceAll("\\\\/","/"));
+        return lastInfos;
     }
 
-    public String albumDate(String url) {
-        String albumInfo, albumDate;
-        try {
-            String code =  getURLSource(url);
-            albumInfo = code.substring(code.indexOf("\"LAST_ALBUM\":"));
-            albumDate = albumInfo.substring(albumInfo.indexOf("\"DIGITAL_RELEASE_DATE\":") + 24);
-            albumDate = albumDate.substring(0, albumDate.indexOf('"'));
-        } catch (Exception e) {
-            albumDate = "";
-            System.out.println("Album Date Error");
-        }
-        return albumDate;
-    }
 
-    public String albumPicture(String url) {
-        String albumInfo, albumPicture;
-        try {
-            String code =  getURLSource(url);
-            albumInfo = code.substring(code.indexOf("\"LAST_ALBUM\":"));
-            albumPicture = albumInfo.substring(albumInfo.indexOf("\"ALB_PICTURE\":") + 15);
-            albumPicture = albumPicture.substring(0, albumPicture.indexOf('"'));
-            albumPicture = "https://e-cdns-images.dzcdn.net/images/cover/" + albumPicture + "/200x200-000000-80-0-0.jpg";
-        } catch (Exception e) {
-            albumPicture = "";
-            System.out.println("Album Picture Error");
-        }
-        return albumPicture;
-    }
 
     public static String formatUnicode(String escaped) {
         if(!escaped.contains("\\u"))
