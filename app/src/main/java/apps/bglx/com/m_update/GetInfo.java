@@ -137,11 +137,10 @@ public class GetInfo {
 
         if (!picURL.contains("http")) {
             try {
-                System.out.println("https://www.deezer.com/search/" + formatUnicode(title) + "/album");
                 String coverCode = getURLSource("https://www.deezer.com/search/" + formatUnicode(title) + "/album");
+                coverCode = coverCode.substring(coverCode.indexOf("QUERY"));
                 picURL = coverCode.substring(coverCode.indexOf("\"ALB_PICTURE\"") + 15);
-                System.out.println(picURL);
-                picURL = picURL.substring(0,picURL.indexOf(""));
+                picURL = picURL.substring(0,picURL.indexOf("\""));
                 picURL = "https://e-cdns-images.dzcdn.net/images/cover/" + picURL + "/250x250.jpg";
             } catch (Exception e) {
                 picURL = "https://e-cdns-images.dzcdn.net/images/cover/250x250.jpg";

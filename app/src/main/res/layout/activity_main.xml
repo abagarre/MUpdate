@@ -12,8 +12,7 @@
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="3dp"
-        android:max="1000"
-        android:progress="0"/>
+        android:indeterminate="true"/>
 
 
     <android.support.v7.widget.RecyclerView
