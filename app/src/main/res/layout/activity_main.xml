@@ -8,7 +8,8 @@
 
     <ProgressBar
         android:id="@+id/loading_bar"
-        style="@android:style/Widget.Holo.Light.ProgressBar.Horizontal"
+        android:theme="@style/LinearProgress"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="3dp"
         android:max="1000"

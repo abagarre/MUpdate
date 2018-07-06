@@ -131,19 +131,19 @@ public class AddArtist extends AppCompatActivity implements View.OnClickListener
         protected void onPostExecute(String result) {
             int size = Integer.parseInt(result);
             if (size > 0) {
-                Picasso.get().load(artistImage1).into(artistImageView1);
+                Picasso.get().load(artistImage1).transform(new CircleTransform()).into(artistImageView1);
                 artistTextName1.setText(artistName1.substring(0,min(artistName1.length(),15)));
                 artistButton1.setVisibility(View.VISIBLE);
                 artistButton1.setOnClickListener(this);
             }
             if (size > 1) {
-                Picasso.get().load(artistImage2).into(artistImageView2);
+                Picasso.get().load(artistImage2).transform(new CircleTransform()).into(artistImageView2);
                 artistTextName2.setText(artistName2.substring(0,min(artistName2.length(),15)));
                 artistButton2.setVisibility(View.VISIBLE);
                 artistButton2.setOnClickListener(this);
             }
             if (size > 2) {
-                Picasso.get().load(artistImage3).into(artistImageView3);
+                Picasso.get().load(artistImage3).transform(new CircleTransform()).into(artistImageView3);
                 artistTextName3.setText(artistName3.substring(0,min(artistName3.length(),15)));
                 artistButton3.setVisibility(View.VISIBLE);
                 artistButton3.setOnClickListener(this);

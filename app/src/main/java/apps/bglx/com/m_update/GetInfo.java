@@ -52,7 +52,6 @@ public class GetInfo {
             StrictMode.setThreadPolicy(policy);
         }
         String code = new Scanner(new URL(url).openStream(), "UTF-8").useDelimiter("\\A").next();
-        System.out.println(code);
         return code;
     }
 
@@ -137,19 +136,39 @@ public class GetInfo {
         date = formatter.format(dateDate);
 
         if (!picURL.contains("http")) {
-            picURL = "https://e-cdns-images.dzcdn.net/images/cover/250x250.jpg";
-//            System.out.println("https://www.deezer.com/search/" + formatUnicode(title) + "/album");
-//            String coverCode = getURLSource("https://www.deezer.com/search/" + formatUnicode(title) + "/album");
-//            picURL = coverCode.substring(coverCode.indexOf("\"ALB_PICTURE\"") + 15);
-//            System.out.println(picURL);
-//            picURL = picURL.substring(0,picURL.indexOf(""));
-//            picURL = "https://e-cdns-images.dzcdn.net/images/cover/" + picURL + "/250x250.jpg";
+            try {
+                System.out.println("https://www.deezer.com/search/" + formatUnicode(title) + "/album");
+                String coverCode = getURLSource("https://www.deezer.com/search/" + formatUnicode(title) + "/album");
+                picURL = coverCode.substring(coverCode.indexOf("\"ALB_PICTURE\"") + 15);
+                System.out.println(picURL);
+                picURL = picURL.substring(0,picURL.indexOf(""));
+                picURL = "https://e-cdns-images.dzcdn.net/images/cover/" + picURL + "/250x250.jpg";
+            } catch (Exception e) {
+                picURL = "https://e-cdns-images.dzcdn.net/images/cover/250x250.jpg";
+            }
         }
 
         lastInfos.add(formatUnicode(title));
         lastInfos.add(date);
         lastInfos.add(picURL.replaceAll("\\\\/","/"));
         return lastInfos;
+    }
+
+    public List<String> getArtistPage (String id) throws Exception {
+        List<String> artistInfos = new ArrayList<>();
+        String code = getURLToString("https://api.deezer.com/artist/" + id);
+        String picURL = code.substring(code.indexOf("\"picture_big\"") + 15);
+        picURL = picURL.substring(0,picURL.indexOf("\""));
+        picURL = picURL.replaceAll("\\\\/","/");
+        String name = code.substring(code.indexOf("\"name\"") + 8);
+        name = name.substring(0,name.indexOf("\""));
+        String nbAlbum = code.substring(code.indexOf("\"nb_album\"") + 11);
+        nbAlbum = nbAlbum.substring(0,nbAlbum.indexOf(","));
+        artistInfos.add(picURL);
+        artistInfos.add(formatUnicode(name));
+        artistInfos.add(nbAlbum);
+        System.out.println(artistInfos);
+        return artistInfos;
     }
 
 
