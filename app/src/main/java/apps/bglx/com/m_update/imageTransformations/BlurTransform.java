@@ -1,18 +1,26 @@
-package apps.bglx.com.m_update;
+package apps.bglx.com.m_update.imageTransformations;
 
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.squareup.picasso.Transformation;
 
-public class BlurTransform {
 
-    public Bitmap transform(Bitmap sentBitmap, float scale, int radius) {
+public class BlurTransform implements Transformation {
+    @Override
+    public Bitmap transform(Bitmap sentBitmap) {
+
+        float scale = 1;
+        int radius = 20;
 
         int width = Math.round(sentBitmap.getWidth() * scale);
         int height = Math.round(sentBitmap.getHeight() * scale);
         sentBitmap = Bitmap.createScaledBitmap(sentBitmap, width, height, false);
 
         Bitmap bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);
+        if (bitmap != sentBitmap) {
+            sentBitmap.recycle();
+        }
 
         if (radius < 1) {
             return (null);
@@ -212,6 +220,11 @@ public class BlurTransform {
         bitmap.setPixels(pix, 0, w, 0, 0, w, h);
 
         return (bitmap);
+    }
+
+    @Override
+    public String key() {
+        return "blur";
     }
 
 }

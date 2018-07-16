@@ -64,8 +64,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-        recyclerView.setAdapter(mAdapter);
 
         new LongOperation().execute();
 
@@ -98,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
         private DatabaseManager databaseManager;
 
         int len;
-        long emptyLong = 0;
 
         List<List> finalData = new ArrayList<>();
 
@@ -121,8 +118,13 @@ public class MainActivity extends AppCompatActivity {
                     ID = infos.substring(infos.indexOf(",") + 1);
                     id = Integer.parseInt(ID);
                     artistName = infos.substring(0,infos.indexOf(","));
+
                     List<String> lastAlbum = getAlbum.getLastAlbum(ID);
+
                     albumName = lastAlbum.get(0);
+                    if (albumName.length() > 28) {
+                        albumName = albumName.substring(0,26) + "...";
+                    }
 
                     albumDate = lastAlbum.get(1);
                     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -130,24 +132,22 @@ public class MainActivity extends AppCompatActivity {
                     long unixTime = date.getTime()/1000;
 
                     albumPicture = lastAlbum.get(2);
-                    if (albumName.length() > 28) {
-                        albumName = albumName.substring(0,26) + "...";
-                    }
+
                     data0.add(albumName);
                     data0.add(artistName);
                     data0.add(albumDate);
                     data0.add(albumPicture);
                     data0.add(ID);
 
+                    while (data.containsKey(unixTime)) {
+                        unixTime += 1;
+                    }
 
                     data.put(unixTime,data0);
-
 
                 } catch (Exception e) {
                     System.out.println(e.toString());
                     System.out.println("Background Error");
-                    data0.add("Empty");
-                    data.put(emptyLong,data0);
                 }
             }
 
@@ -165,19 +165,27 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
 
+            loadingBar.setIndeterminate(false);
+
             for (List<String> infosArtist : finalData) {
-                Movie movie = new Movie(infosArtist.get(0), infosArtist.get(1), infosArtist.get(2), infosArtist.get(3),Integer.parseInt(infosArtist.get(4)));
+
+                ObjectAnimator animation = ObjectAnimator.ofInt(loadingBar, "progress", len * incr);
+                animation.setDuration(500); // 0.5 second
+                animation.setInterpolator(new DecelerateInterpolator());
+                animation.start();
+                incr += 1;
+
+                Movie movie = new Movie(
+                        infosArtist.get(0),
+                        infosArtist.get(1),
+                        infosArtist.get(2),
+                        infosArtist.get(3),
+                        Integer.parseInt(infosArtist.get(4))
+                );
                 albumList.add(movie);
                 mAdapter.notifyDataSetChanged();
 
-                loadingBar.setIndeterminate(false);
-                loadingBar.setProgress(100);
 
-//                ObjectAnimator animation = ObjectAnimator.ofInt(loadingBar, "progress", len * incr);
-//                animation.setDuration(500); // 0.5 second
-//                animation.setInterpolator(new DecelerateInterpolator());
-//                animation.start();
-//                incr += 1;
             }
 
         }

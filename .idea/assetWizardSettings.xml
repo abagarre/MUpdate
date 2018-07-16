@@ -16,11 +16,26 @@
                             <entry key="actionbar">
                               <value>
                                 <PersistentState>
+                                  <option name="children">
+                                    <map>
+                                      <entry key="image">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="trimmed" value="true" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
+                                    </map>
+                                  </option>
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="C:\Users\Alexis\Pictures\Android\MUpdate\black_background.png" />
-                                      <entry key="outputName" value="black_background" />
+                                      <entry key="imageAsset" value="C:\Users\Alexis\Pictures\Android\MUpdate\rounded_corners.png" />
+                                      <entry key="outputName" value="rounded_corners" />
                                     </map>
                                   </option>
                                 </PersistentState>

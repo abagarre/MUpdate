@@ -29,7 +29,7 @@ public class GetInfo {
     }
 
     private static String toString(InputStream inputStream) throws Exception {
-        String inputLine = new String();
+        String inputLine;
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"))) {
             StringBuilder stringBuilder = new StringBuilder();
             while ((inputLine = bufferedReader.readLine()) != null) {
@@ -112,7 +112,7 @@ public class GetInfo {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date dateDate = format.parse(date);
         String title = code.substring(code.indexOf("\"title\"")+9);
-        title = title.substring(0,title.indexOf("\""));
+        title = title.substring(0,title.indexOf("\","));
         String picURL = code.substring(code.indexOf("\"cover_medium\"")+16);
         picURL = picURL.substring(0,picURL.indexOf("\""));
 
@@ -125,7 +125,7 @@ public class GetInfo {
             if (dateDate.compareTo(newDateDate) <= 0) {
                 dateDate = newDateDate;
                 title = code.substring(code.indexOf("\"title\"")+9);
-                title = title.substring(0,title.indexOf("\""));
+                title = title.substring(0,title.indexOf("\","));
                 picURL = code.substring(code.indexOf("\"cover_medium\"")+16);
                 picURL = picURL.substring(0,picURL.indexOf("\""));
             }
@@ -166,9 +166,10 @@ public class GetInfo {
         artistInfos.add(picURL);
         artistInfos.add(formatUnicode(name));
         artistInfos.add(nbAlbum);
-        System.out.println(artistInfos);
         return artistInfos;
     }
+
+
 
 
 

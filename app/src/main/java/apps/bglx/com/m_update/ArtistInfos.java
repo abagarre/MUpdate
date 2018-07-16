@@ -1,38 +1,32 @@
 package apps.bglx.com.m_update;
 
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-import com.squareup.picasso.Transformation;
 
 import java.util.List;
+
+import apps.bglx.com.m_update.imageTransformations.BlurTransform;
+import apps.bglx.com.m_update.imageTransformations.CircleTransform;
 
 public class ArtistInfos extends AppCompatActivity {
 
     public static Activity infoAct;
     GetInfo get = new GetInfo();
     BlurTransform blur = new BlurTransform();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +45,8 @@ public class ArtistInfos extends AppCompatActivity {
 
         Bundle b = getIntent().getExtras();
         final int id = b.getInt("id");
-        System.out.println(id);
 
         new LongOperation().execute(String.valueOf(id));
-
 
         Button delete = (Button) findViewById(R.id.info_delete_button);
 
@@ -88,7 +80,6 @@ public class ArtistInfos extends AppCompatActivity {
                 artistPicture = artistInfos.get(0);
                 artistName = artistInfos.get(1);
                 nbAlbum = artistInfos.get(2);
-
                 } catch (Exception e) {
                 System.out.println("Artist Infos Error");
                 }
@@ -97,24 +88,15 @@ public class ArtistInfos extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            ImageView artistImageView = (ImageView) findViewById(R.id.info_artist_image);
+            final ImageView artistImageView = (ImageView) findViewById(R.id.info_artist_image);
             final ImageView backgroundImageView = (ImageView) findViewById(R.id.info_background);
             Picasso.get().load(artistPicture).transform(new CircleTransform()).into(artistImageView);
-            Picasso.get().load(artistPicture).into(new Target() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    Bitmap blurredBack = blur.transform(bitmap, 1, 30);
-                    backgroundImageView.setImageBitmap(blurredBack);
-                }
-                @Override
-                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                }
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {
-                }
-            });
+            Picasso.get().load(artistPicture).transform(new BlurTransform()).into(backgroundImageView);
             TextView artistText = (TextView) findViewById(R.id.info_artist_text);
             artistText.setText(artistName);
+            TextView nbAlbumText = (TextView) findViewById(R.id.info_nb_album);
+            nbAlbum = nbAlbum + " albums";
+            nbAlbumText.setText(nbAlbum);
         }
 
     }

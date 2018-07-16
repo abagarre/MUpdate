@@ -1,4 +1,4 @@
-package apps.bglx.com.m_update;
+package apps.bglx.com.m_update.imageTransformations;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
