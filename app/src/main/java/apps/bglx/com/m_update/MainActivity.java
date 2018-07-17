@@ -4,13 +4,11 @@ package apps.bglx.com.m_update;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -25,11 +23,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.concurrent.TimeUnit;
+
+import apps.bglx.com.m_update.mainAlbumListRecycle.RecyclerAdapter;
+import apps.bglx.com.m_update.mainAlbumListRecycle.RecyclerTouchListener;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -166,14 +165,9 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
 
             loadingBar.setIndeterminate(false);
+            loadingBar.setVisibility(View.GONE);
 
             for (List<String> infosArtist : finalData) {
-
-                ObjectAnimator animation = ObjectAnimator.ofInt(loadingBar, "progress", len * incr);
-                animation.setDuration(500); // 0.5 second
-                animation.setInterpolator(new DecelerateInterpolator());
-                animation.start();
-                incr += 1;
 
                 Movie movie = new Movie(
                         infosArtist.get(0),

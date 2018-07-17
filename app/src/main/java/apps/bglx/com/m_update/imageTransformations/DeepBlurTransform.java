@@ -1,93 +1,26 @@
-package apps.bglx.com.m_update;
+package apps.bglx.com.m_update.imageTransformations;
 
 import android.graphics.Bitmap;
-import android.graphics.BlurMaskFilter;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+import com.squareup.picasso.Transformation;
 
-import java.util.List;
 
-public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHolder> {
-
-    private List<Movie> moviesList;
-
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, year, genre;
-        public ImageView cover, backgroundCover;
-
-        public MyViewHolder(View view) {
-            super(view);
-            title = (TextView) view.findViewById(R.id.title);
-            genre = (TextView) view.findViewById(R.id.genre);
-            year = (TextView) view.findViewById(R.id.year);
-            cover = (ImageView) view.findViewById(R.id.cover);
-            backgroundCover = view.findViewById(R.id.background_cover);
-        }
-    }
-
-    public MoviesAdapter(List<Movie> moviesList) {
-        this.moviesList = moviesList;
-    }
-
+public class DeepBlurTransform implements Transformation {
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.movie_list_row, parent, false);
-        return new MyViewHolder(itemView);
-    }
+    public Bitmap transform(Bitmap sentBitmap) {
 
-
-    @Override
-    public void onBindViewHolder(final MyViewHolder holder, int position) {
-
-        final Movie movie = moviesList.get(position);
-        holder.title.setText(movie.getTitle());
-        holder.genre.setText(movie.getGenre());
-        holder.year.setText(movie.getYear());
-        Picasso.get().load(movie.getCover()).into(
-                new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        Bitmap blurredBack = fastblurBitmap(bitmap, 1, 30);
-                        holder.backgroundCover.setImageBitmap(blurredBack);
-                        holder.cover.setImageBitmap(bitmap);
-                    }
-                    @Override
-                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                    }
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-                        holder.backgroundCover.setImageDrawable(placeHolderDrawable);
-                    }
-                }
-        );
-
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return moviesList.size();
-    }
-
-
-    public Bitmap fastblurBitmap(Bitmap sentBitmap, float scale, int radius) {
+        float scale = 1;
+        int radius = 50;
 
         int width = Math.round(sentBitmap.getWidth() * scale);
         int height = Math.round(sentBitmap.getHeight() * scale);
         sentBitmap = Bitmap.createScaledBitmap(sentBitmap, width, height, false);
 
         Bitmap bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);
+        if (bitmap != sentBitmap) {
+            sentBitmap.recycle();
+        }
 
         if (radius < 1) {
             return (null);
@@ -287,6 +220,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         bitmap.setPixels(pix, 0, w, 0, 0, w, h);
 
         return (bitmap);
+    }
+
+    @Override
+    public String key() {
+        return "blur";
     }
 
 }

@@ -21,6 +21,7 @@ import java.util.List;
 
 import apps.bglx.com.m_update.imageTransformations.BlurTransform;
 import apps.bglx.com.m_update.imageTransformations.CircleTransform;
+import apps.bglx.com.m_update.imageTransformations.DeepBlurTransform;
 
 public class ArtistInfos extends AppCompatActivity {
 
@@ -91,7 +92,7 @@ public class ArtistInfos extends AppCompatActivity {
             final ImageView artistImageView = (ImageView) findViewById(R.id.info_artist_image);
             final ImageView backgroundImageView = (ImageView) findViewById(R.id.info_background);
             Picasso.get().load(artistPicture).transform(new CircleTransform()).into(artistImageView);
-            Picasso.get().load(artistPicture).transform(new BlurTransform()).into(backgroundImageView);
+            Picasso.get().load(artistPicture).transform(new DeepBlurTransform()).into(backgroundImageView);
             TextView artistText = (TextView) findViewById(R.id.info_artist_text);
             artistText.setText(artistName);
             TextView nbAlbumText = (TextView) findViewById(R.id.info_nb_album);

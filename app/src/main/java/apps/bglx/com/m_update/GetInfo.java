@@ -171,11 +171,9 @@ public class GetInfo {
 
 
 
-
-
     public static String formatUnicode(String escaped) {
         if(!escaped.contains("\\u"))
-            return escaped;
+            return escaped.replaceAll("\\\\","");
         String processed="";
         int position = escaped.indexOf("\\u");
         while(position!=-1) {
@@ -187,7 +185,7 @@ public class GetInfo {
             position=escaped.indexOf("\\u");
         }
         processed += escaped;
-        return processed;
+        return processed.replaceAll("\\\\","");
     }
 
 }

@@ -1,27 +1,21 @@
-package apps.bglx.com.m_update;
+package apps.bglx.com.m_update.mainAlbumListRecycle;
 
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.util.List;
 
+import apps.bglx.com.m_update.ItemClickListener;
+import apps.bglx.com.m_update.Movie;
+import apps.bglx.com.m_update.R;
 import apps.bglx.com.m_update.imageTransformations.BlurTransform;
-import apps.bglx.com.m_update.imageTransformations.ImageCornerRadius;
 
 class RecycleViewHolder extends RecyclerView.ViewHolder
         implements View.OnClickListener, View.OnLongClickListener {
@@ -67,9 +61,6 @@ class RecycleViewHolder extends RecyclerView.ViewHolder
 public class RecyclerAdapter extends RecyclerView.Adapter<RecycleViewHolder> {
 
     private List<Movie> albumList;
-
-    ImageCornerRadius cornerRadius = new ImageCornerRadius();
-
 
     public RecyclerAdapter(List<Movie> albumList) {
         this.albumList = albumList;

@@ -1,4 +1,4 @@
-package apps.bglx.com.m_update;
+package apps.bglx.com.m_update.mainAlbumListRecycle;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

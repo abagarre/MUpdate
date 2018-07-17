@@ -8,7 +8,6 @@
     <color name="year">#c8c8c8</color>
     <color name="title">#222222</color>
     <color name="white_text">#ffffff</color>
-    <color name="black_background">#000000</color>
     <color name="black">#000000</color>
     <color name="accent_material_dark_1">#bdbdbd</color>
 </resources>
