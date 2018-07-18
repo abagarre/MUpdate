@@ -115,6 +115,8 @@ public class GetInfo {
         title = title.substring(0,title.indexOf("\","));
         String picURL = code.substring(code.indexOf("\"cover_medium\"")+16);
         picURL = picURL.substring(0,picURL.indexOf("\""));
+        String albumId = code.substring(code.indexOf("\"id\"") + 5);
+        albumId = albumId.substring(0,albumId.indexOf(","));
 
         code = code.substring(code.indexOf("\"type\"")+7);
 
@@ -128,6 +130,8 @@ public class GetInfo {
                 title = title.substring(0,title.indexOf("\","));
                 picURL = code.substring(code.indexOf("\"cover_medium\"")+16);
                 picURL = picURL.substring(0,picURL.indexOf("\""));
+                albumId = code.substring(code.indexOf("\"id\"") + 5);
+                albumId = albumId.substring(0,albumId.indexOf(","));
             }
             code = code.substring(code.indexOf("\"type\"")+7);
         }
@@ -150,6 +154,7 @@ public class GetInfo {
         lastInfos.add(formatUnicode(title));
         lastInfos.add(date);
         lastInfos.add(picURL.replaceAll("\\\\/","/"));
+        lastInfos.add(albumId);
         return lastInfos;
     }
 
@@ -169,6 +174,59 @@ public class GetInfo {
         return artistInfos;
     }
 
+
+    public List<List> getAlbumInfo (String id) throws Exception {
+        List<List> albumDatas = new ArrayList<>();
+        List<String> albumInfos = new ArrayList<>();
+        List<String> tracks = new ArrayList<>();
+        String code = getURLToString("https://api.deezer.com/album/" + id);
+        String title = code.substring(code.indexOf("\"title\"") + 9);
+        title = title.substring(0,title.indexOf("\""));
+        String picURL = code.substring(code.indexOf("\"cover_big\"") + 13);
+        picURL = picURL.substring(0,picURL.indexOf("\""));
+        picURL = picURL.replaceAll("\\\\/","/");
+        String nbtracks = code.substring(code.indexOf("\"nb_tracks\"") + 12);
+        nbtracks = nbtracks.substring(0, nbtracks.indexOf(","));
+        int nbTracks = Integer.parseInt(nbtracks);
+        String date = code.substring(code.indexOf("\"release_date\"")+16);
+        date = date.substring(0,date.indexOf("\""));
+
+        String trackName;
+        String trackDuration;
+
+        code = code.substring(code.indexOf("\"tracks\""));
+
+        for (int i = 1 ; i <= nbTracks ; i++) {
+            trackName = code.substring(code.indexOf("\"title\"") + 9);
+            trackName = trackName.substring(0,trackName.indexOf("\""));
+            trackDuration = code.substring(code.indexOf("\"duration\"") + 11);
+            trackDuration = trackDuration.substring(0,trackDuration.indexOf(","));
+            int minutes = Integer.parseInt(trackDuration)/60;
+            int secondes = Integer.parseInt(trackDuration) - 60 * minutes;
+            if (secondes < 10) {
+                trackDuration = Integer.toString(minutes) + ":0" + Integer.toString(secondes);
+            } else {
+                trackDuration = Integer.toString(minutes) + ":" + Integer.toString(secondes);
+            }
+            if (formatUnicode(trackName).length() > 25) {
+                tracks.add(formatUnicode(trackName).substring(0,24) + "...");
+            } else {
+                tracks.add(formatUnicode(trackName));
+            }
+            tracks.add(trackDuration);
+            code = code.substring(code.indexOf("\"track\"") + 9);
+        }
+
+        albumInfos.add(picURL);
+        albumInfos.add(formatUnicode(title));
+        albumInfos.add(date);
+        albumInfos.add(Integer.toString(nbTracks));
+
+        albumDatas.add(albumInfos);
+        albumDatas.add(tracks);
+
+        return albumDatas;
+    }
 
 
     public static String formatUnicode(String escaped) {

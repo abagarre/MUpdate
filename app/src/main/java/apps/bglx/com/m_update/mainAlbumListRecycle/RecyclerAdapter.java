@@ -1,12 +1,15 @@
 package apps.bglx.com.m_update.mainAlbumListRecycle;
 
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -35,7 +38,7 @@ class RecycleViewHolder extends RecyclerView.ViewHolder
         genre = (TextView) itemView.findViewById(R.id.genre);
         year = (TextView) itemView.findViewById(R.id.year);
         cover = (ImageView) itemView.findViewById(R.id.cover);
-        backgroundCover = itemView.findViewById(R.id.background_cover);
+        backgroundCover = (ImageView) itemView.findViewById(R.id.background_cover);
 
         itemView.setOnClickListener(this);
         itemView.setOnLongClickListener(this);
@@ -72,7 +75,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecycleViewHolder> {
     public RecycleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View itemView = inflater.inflate(R.layout.movie_list_row,parent,false);
-
         return new RecycleViewHolder(itemView);
     }
 
@@ -82,12 +84,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecycleViewHolder> {
         holder.title.setText(movie.getTitle());
         holder.genre.setText(movie.getGenre());
         holder.year.setText(movie.getYear());
-        final ImageView backgroundBlurred = (ImageView) holder.backgroundCover;
-        final ImageView coverFront = (ImageView) holder.cover;
-        Picasso.get().load(movie.getCover()).transform(new BlurTransform()).into(backgroundBlurred);
-        Picasso.get().load(movie.getCover()).into(coverFront);
+        Picasso.get().load(movie.getCover()).transform(new BlurTransform()).into(holder.backgroundCover);
+        Picasso.get().load(movie.getCover()).into(holder.cover);
 
     }
+
 
     @Override
     public int getItemCount() {

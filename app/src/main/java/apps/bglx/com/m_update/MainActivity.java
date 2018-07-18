@@ -1,12 +1,15 @@
 package apps.bglx.com.m_update;
 
 
-import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.app.ActivityOptions;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,8 +17,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -29,15 +36,21 @@ import java.util.TreeSet;
 
 import apps.bglx.com.m_update.mainAlbumListRecycle.RecyclerAdapter;
 import apps.bglx.com.m_update.mainAlbumListRecycle.RecyclerTouchListener;
+import apps.bglx.com.m_update.mainAlbumTracks.AlbumTracks;
 
 
 public class MainActivity extends AppCompatActivity {
     private List<Movie> albumList = new ArrayList<>();
     private RecyclerView recyclerView;
     private RecyclerAdapter mAdapter;
+
     private int incr = 1;
+    final Context context = this;
 
     public static Activity mainAct;
+
+    FragmentManager fm = getSupportFragmentManager();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +66,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, AddArtist.class);
                 startActivity(i);
+
             }
         });
-
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mAdapter = new RecyclerAdapter(albumList);
@@ -68,14 +81,53 @@ public class MainActivity extends AppCompatActivity {
 
         mAdapter.notifyDataSetChanged();
 
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
+        recyclerView.addOnItemTouchListener(
+                new RecyclerTouchListener(getApplicationContext(), recyclerView,
+                        new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Movie movie = albumList.get(position);
-                Intent intent = new Intent(MainActivity.this, ArtistInfos.class);
-                intent.putExtra("id", movie.getID());
-                startActivity(intent);
+
+                final Movie movie = albumList.get(position);
+
+                AlbumTracks Fragment = new AlbumTracks();
+
+                Bundle data = new Bundle();
+                data.putInt("artistID",movie.getID());
+                Fragment.setArguments(data);
+                // Show DialogFragment
+                Fragment.show(fm, "Dialog Fragment");
+
+//                // custom dialog
+//                final Dialog dialog = new Dialog(context);
+//                dialog.setContentView(R.layout.album_dialog);
+//
+//                // set the custom dialog components - text, image and button
+//                TextView text = (TextView) dialog.findViewById(R.id.dialog_album_name);
+//                text.setText(movie.getTitle());
+//                ImageView cover = (ImageView) dialog.findViewById(R.id.dialog_album_cover);
+//                Picasso.get().load(movie.getCover()).into(cover);
+//
+//                Button dialogButton = (Button) dialog.findViewById(R.id.dialog_button);
+//                // if button is clicked, close the custom dialog
+//                dialogButton.setOnClickListener(new View.OnClickListener() {
+//
+//                    @Override
+//                    public void onClick(View v) {
+//
+//                        dialog.dismiss();
+//                        Intent intent = new Intent(MainActivity.this, ArtistInfos.class);
+//                        intent.putExtra("id", movie.getID());
+//
+//                        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this);
+//
+//                        startActivity(intent, options.toBundle());
+//                    }
+//                });
+//
+//
+//                dialog.show();
             }
+
             @Override
             public void onLongClick(View view, int position) {
 
@@ -83,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
         }));
 
     }
+
 
     private class LongOperation extends AsyncTask<String, Void, String> {
 

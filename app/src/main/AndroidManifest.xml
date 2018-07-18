@@ -22,7 +22,7 @@
         <activity
             android:name=".ArtistInfos"
             android:label="@string/title_activity_artist_infos"
-            android:theme="@style/FullScreenTransparent"></activity>
+            android:theme="@style/FullScreenTransparent" />
     </application>
 
 </manifest>

@@ -8,6 +8,7 @@
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="LinearProgress" parent="Theme.AppCompat.Light">
