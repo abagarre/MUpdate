@@ -1,15 +1,19 @@
 package apps.bglx.com.m_update.mainAlbumTracks;
 
 
+import android.app.Activity;
 import android.app.ActivityOptions;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.graphics.Palette;
@@ -38,17 +42,24 @@ import apps.bglx.com.m_update.ArtistInfos;
 import apps.bglx.com.m_update.GetInfo;
 import apps.bglx.com.m_update.MainActivity;
 import apps.bglx.com.m_update.R;
+import apps.bglx.com.m_update.imageTransformations.ImageTarget;
 
 import static apps.bglx.com.m_update.MainActivity.mainAct;
 
 public class AlbumTracks extends DialogFragment {
 
-    private ImageView cover;
+    private int id;
+
+    private ImageView cover, backCover;
     private ViewGroup background;
     private TextView title;
     private TextView trackName;
     private TextView trackDuration;
     private Button artistPage;
+
+    public static Dialog dialog;
+
+    String coverURL;
 
     AlbumTracksAdapter adapter;
     RecyclerView recyclerView;
@@ -65,18 +76,21 @@ public class AlbumTracks extends DialogFragment {
         View trackView = inflater.inflate(R.layout.album_tracks,container,false);
         getDialog().setTitle("DialogFragment Tutorial");
 
+        dialog = getDialog();
 
-        final int id = getArguments().getInt("artistID");
+
+        id = getArguments().getInt("artistID");
         System.out.println(id);
         displayTracks(id);
 
         cover = (ImageView) rootView.findViewById(R.id.dialog_album_cover);
+        backCover = (ImageView) rootView.findViewById(R.id.dialog_album_cover_bg);
         background = (ViewGroup) rootView.findViewById(R.id.dialog_background);
         title = (TextView) rootView.findViewById(R.id.dialog_album_name);
         trackName = (TextView) trackView.findViewById(R.id.track_name);
         trackDuration = (TextView) trackView.findViewById(R.id.track_duration);
         artistPage = (Button) rootView.findViewById(R.id.dialog_button);
-        recyclerView = rootView.findViewById(R.id.list_tracks_recycle);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.list_tracks_recycle);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(mainAct));
 
@@ -87,11 +101,11 @@ public class AlbumTracks extends DialogFragment {
                         Intent intent = new Intent(mainAct, ArtistInfos.class);
                         intent.putExtra("id", id);
 
-                        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(mainAct);
+                        ActivityOptionsCompat options = ActivityOptionsCompat.
+                                makeSceneTransitionAnimation(mainAct, cover, "last_cover");
 
                         startActivity(intent, options.toBundle());
 
-                        dismiss();
                     }
                 });
 
@@ -136,6 +150,7 @@ public class AlbumTracks extends DialogFragment {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                     assert cover != null;
+                    backCover.setImageBitmap(bitmap);
                     cover.setImageBitmap(bitmap);
                     Palette.from(bitmap)
                             .generate(new Palette.PaletteAsyncListener() {
@@ -150,7 +165,18 @@ public class AlbumTracks extends DialogFragment {
                                         trackDuration.setTextColor(Color.WHITE);
                                         return;
                                     }
-                                    background.setBackgroundColor(textSwatch.getRgb());
+                                    Palette.Swatch lightVibrant = palette.getLightVibrantSwatch();
+
+                                    if (lightVibrant != null) {
+                                        GradientDrawable gd = new GradientDrawable();
+                                        gd.setColors(new int[]{
+                                                textSwatch.getRgb(),
+                                                lightVibrant.getRgb()});
+                                        gd.setGradientType(GradientDrawable.LINEAR_GRADIENT);
+                                        background.setBackground(gd);
+                                    } else {
+                                        background.setBackgroundColor(textSwatch.getRgb());
+                                    }
                                     title.setTextColor(textSwatch.getTitleTextColor());
                                     trackName.setTextColor(textSwatch.getBodyTextColor());
                                     trackDuration.setTextColor(textSwatch.getBodyTextColor());
@@ -179,8 +205,8 @@ public class AlbumTracks extends DialogFragment {
 
         @Override
         protected void onPostExecute(String result) {
-            String coverURL = albumDatas.get(0).get(0).toString();
-            Picasso.get().load(coverURL).into(target);
+            coverURL = albumDatas.get(0).get(0).toString();
+            Picasso.get().load(coverURL).noFade().into(target);
             title.setText(albumDatas.get(0).get(1).toString());
             adapter = new AlbumTracksAdapter(mainAct, trackList);
             recyclerView.setAdapter(adapter);
