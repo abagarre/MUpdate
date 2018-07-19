@@ -6,6 +6,8 @@ import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -96,36 +98,6 @@ public class MainActivity extends AppCompatActivity {
                 Fragment.setArguments(data);
                 // Show DialogFragment
                 Fragment.show(fm, "Dialog Fragment");
-
-//                // custom dialog
-//                final Dialog dialog = new Dialog(context);
-//                dialog.setContentView(R.layout.album_dialog);
-//
-//                // set the custom dialog components - text, image and button
-//                TextView text = (TextView) dialog.findViewById(R.id.dialog_album_name);
-//                text.setText(movie.getTitle());
-//                ImageView cover = (ImageView) dialog.findViewById(R.id.dialog_album_cover);
-//                Picasso.get().load(movie.getCover()).into(cover);
-//
-//                Button dialogButton = (Button) dialog.findViewById(R.id.dialog_button);
-//                // if button is clicked, close the custom dialog
-//                dialogButton.setOnClickListener(new View.OnClickListener() {
-//
-//                    @Override
-//                    public void onClick(View v) {
-//
-//                        dialog.dismiss();
-//                        Intent intent = new Intent(MainActivity.this, ArtistInfos.class);
-//                        intent.putExtra("id", movie.getID());
-//
-//                        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this);
-//
-//                        startActivity(intent, options.toBundle());
-//                    }
-//                });
-//
-//
-//                dialog.show();
             }
 
             @Override
@@ -135,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
         }));
 
     }
-
 
     private class LongOperation extends AsyncTask<String, Void, String> {
 

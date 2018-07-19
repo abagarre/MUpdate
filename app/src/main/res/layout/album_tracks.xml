@@ -10,16 +10,13 @@
         android:id="@+id/track_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/white_text"
         android:textSize="12sp"/>
 
     <TextView
         android:id="@+id/track_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-
-        android:textSize="12sp"
-        android:textColor="@color/white_text"/>
+        android:layout_alignParentEnd="true"
+        android:textSize="12sp"/>
 
 </RelativeLayout>

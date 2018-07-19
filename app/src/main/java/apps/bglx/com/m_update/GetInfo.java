@@ -181,7 +181,7 @@ public class GetInfo {
         List<String> tracks = new ArrayList<>();
         String code = getURLToString("https://api.deezer.com/album/" + id);
         String title = code.substring(code.indexOf("\"title\"") + 9);
-        title = title.substring(0,title.indexOf("\""));
+        title = title.substring(0,title.indexOf("\","));
         String picURL = code.substring(code.indexOf("\"cover_big\"") + 13);
         picURL = picURL.substring(0,picURL.indexOf("\""));
         picURL = picURL.replaceAll("\\\\/","/");
@@ -198,7 +198,7 @@ public class GetInfo {
 
         for (int i = 1 ; i <= nbTracks ; i++) {
             trackName = code.substring(code.indexOf("\"title\"") + 9);
-            trackName = trackName.substring(0,trackName.indexOf("\""));
+            trackName = trackName.substring(0,trackName.indexOf("\","));
             trackDuration = code.substring(code.indexOf("\"duration\"") + 11);
             trackDuration = trackDuration.substring(0,trackDuration.indexOf(","));
             int minutes = Integer.parseInt(trackDuration)/60;
